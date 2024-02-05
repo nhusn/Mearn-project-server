@@ -2,8 +2,9 @@ const pendingServices = require('../Models/pendingServiceModel')
 const sendEmail = require('../utils/sendEmail')
 
 
-exports.addPendingSeervice = async (req, res) => {
+exports.addPendingServiceController = async (req, res) => {
     const { name, number, email, date, company, model, regNo, ModOfService, vehiclePickup, address, message } = req.body
+    console.log(name,number,email,date);
     try {
         const newService = new pendingServices({
             name, number, email, date, company, model, regNo, ModOfService, vehiclePickup, address, message
@@ -20,8 +21,28 @@ exports.addPendingSeervice = async (req, res) => {
             anangel098@gmail.com
             `;
 
-        // await sendEmail(email, "Booking Service",emailTemplate)
+        await sendEmail(email, "Booking Service",emailTemplate)
         res.status(200).json("Our representative will call you")
+    } catch (error) {
+        res.status(401).json(error)
+    }
+}
+
+exports.allPendingServiceController = async (req,res) =>{
+    try {
+        const allServices = await pendingServices.find()
+        res.status(200).json(allServices)
+    } catch (error) {
+        res.status(401).json(error)
+    }
+}
+
+exports.removePendingController = async (req,res)=>{
+    const {id} = req.body
+    console.log(id);
+    try {
+        const existingService = await pendingServices.findByIdAndDelete({_id:id})
+        res.status(200).json(existingService)
     } catch (error) {
         res.status(401).json(error)
     }

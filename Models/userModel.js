@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
     mobno:{
         type:Number,
         required:true,
-        unique:true
+        unique:true,
+        minlength: 10
     },
     password:{
         type:String,
