@@ -38,5 +38,8 @@ router.delete("/services/call/remove/:id",callRequestController.removeCallReques
 // add ongoing service
 router.post('/service/ongoing/add',ongoingController.addOngoingController)
 
+// get all ongoing service
+router.get("/services/ongoing/all",ongoingController.getallOngoingServiceController)
+
 
 module.exports = router

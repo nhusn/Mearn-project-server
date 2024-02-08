@@ -32,7 +32,7 @@ const ongoingSchema = new mongoose.Schema({
     bookService:{
         type:Boolean,
         required:true,
-        default:false
+        default:true
     },
     vehiclePickup:{
         type:Boolean,
