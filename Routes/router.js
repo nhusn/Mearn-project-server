@@ -4,6 +4,7 @@ const jwtMiddleware = require('../Middlewares/jwtMiddleware')
 const pendingServiceController = require("../Controller/pendingServiceController")
 const callRequestController = require('../Controller/callRequestController')
 const ongoingController = require('../Controller/ongoingController')
+const billingController = require('../Controller/billingControler')
 
 
 const router = new express.Router()
@@ -40,6 +41,12 @@ router.post('/service/ongoing/add',ongoingController.addOngoingController)
 
 // get all ongoing service
 router.get("/services/ongoing/all",ongoingController.getallOngoingServiceController)
+
+// update ongoing service
+router.post('/services/ongoing/update',ongoingController.updateOngoingController)
+
+// add to billing history
+router.post('/history/bill',billingController.addToHistoryController)
 
 
 module.exports = router

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 const historySchema = new mongoose.Schema({
-    mobno:{
-        type:Number,
+    email:{
+        type:String,
         required:true,
     },
     servhistory:[
@@ -86,7 +86,7 @@ const historySchema = new mongoose.Schema({
                     discount:{
                         type:Number,
                         required:true
-                    },
+                    }
                 }
             ]
         }

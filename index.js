@@ -9,7 +9,7 @@ dc_server.use(cors())
 dc_server.use(express.json())
 dc_server.use(routes)
 
-const PORT = 3000 || process.env.PORT
+const PORT = 3003 || process.env.PORT
 
 dc_server.listen(PORT,()=>{
     console.log(`Daily Server Started at port ${PORT} and waiting client request`);
