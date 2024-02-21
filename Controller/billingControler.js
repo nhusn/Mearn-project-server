@@ -1,36 +1,18 @@
-const history = require('../Models/billingModel')
+const history = require("../Models/billingModel");
+const ongoing = require("../Models/ongoingModel");
 
-exports.addToHistoryController = async (req,res) => {
-    const {email,invoiceDate,billedAddress,mobNo,techName,jobDate,invoiceType,repairType,km,registerNo,chasisNo,engineNo,modelName} = req.body
-
-    // ,labourPartsCode,descLabourParts,billingType,qty,uom,rate,discount
-    const {allHistory,customerDetails} = req.body
-    console.log(allHistory);
-
-    try {
-        const newHistory = new history({
-            email,servhistory:[
-                {
-                    customerDetails:{
-                        invoiceDate,billedAddress,mobNo,techName,jobDate,invoiceType,repairType,km,registerNo,chasisNo,engineNo,modelName
-                    },
-                    partsDetails:[
-                        allHistory.forEach(item=>(
-                            {
-                                labourPartsCode:"123",descLabourParts:"horn",billingType:"ww",qty:1,uom:"Each",rate:122,discount:0
-                            }
-                        ))
-                        
-                            
-                        
-                        
-                    ]
-                }
-            ]
-        })
-        await newHistory.save()
-        return res.status(200).json(newHistory)
-    } catch (error) {
-        return res.status(401).json(error)
-    }
-}
+exports.addToHistoryController = async (req, res) => {
+  const { allHistory, customerDetails, _id } = req.body;
+  console.log(allHistory);
+  try {
+    const newHistory = new history({
+      customerDetails,
+      partsDetails: allHistory,
+    });
+    await newHistory.save();
+    const result = await ongoing.findByIdAndUpdate({ _id },{createBill:true},{new:true});
+    return res.status(200).json({newHistory,result});
+  } catch (error) {
+    return res.status(401).json(error);
+  }
+};

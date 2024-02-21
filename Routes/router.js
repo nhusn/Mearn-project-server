@@ -45,6 +45,9 @@ router.get("/services/ongoing/all",ongoingController.getallOngoingServiceControl
 // update ongoing service
 router.post('/services/ongoing/update',ongoingController.updateOngoingController)
 
+// complaint Description
+router.post('/ongoing/description',ongoingController.addComplaintDescriptionController)
+
 // add to billing history
 router.post('/history/bill',billingController.addToHistoryController)
 
