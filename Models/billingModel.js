@@ -54,6 +54,10 @@ const historySchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+    totalAmount:{
+        type:Number,
+        required:true
+    }
   },
   partsDetails: [
     {

@@ -51,5 +51,14 @@ router.post('/ongoing/description',ongoingController.addComplaintDescriptionCont
 // add to billing history
 router.post('/history/bill',billingController.addToHistoryController)
 
+// get all history
+router.post('/all-history',jwtMiddleware ,billingController.getAllHistoryController)
+
+// get One History
+router.post('/history',jwtMiddleware, billingController.getHistoryController)
+
+// user update 
+router.post('/user/update',jwtMiddleware,userController.updateUserController)
+
 
 module.exports = router
