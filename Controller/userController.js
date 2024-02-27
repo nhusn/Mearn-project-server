@@ -4,6 +4,7 @@ const Token = require("../Models/token");
 const sendMail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
+const bcrypt = require("bcrypt");
 
 // User Register
 exports.registerController = async (req, res) => {
@@ -40,8 +41,9 @@ exports.registerController = async (req, res) => {
 exports.loginController = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const existingUser = await users.findOne({ email, password });
-    if (existingUser) {
+    const existingUser = await users.findOne({ email });
+    const hash = bcrypt.compareSync(password, existingUser?.password);
+    if (existingUser && hash) {
       if (existingUser.verified) {
         const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SECRET_CODE);
         res.status(200).json({ existingUser, token });
