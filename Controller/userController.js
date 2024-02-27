@@ -5,6 +5,7 @@ const sendMail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const bcrypt = require("bcrypt");
+const { ObjectId } = require("mongoose").Types;
 
 // User Register
 exports.registerController = async (req, res) => {
@@ -100,6 +101,35 @@ exports.updateUserController = async (req, res) => {
   const userDetails = req.body;
   try {
     const result = await users.findByIdAndUpdate({ _id: userDetails._id }, userDetails, { new: true });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};
+
+exports.forgotPasswordEmailController = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await users.findOne({ email });
+    if (result) {
+      const token = new Token({
+        userId: result._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      });
+      await token.save();
+      const url = `${process.env.BASE_URL}/password/${result._id}/verify/${token.token}`;
+      await sendEmail(result.email, "Forgot Password", url);
+      return res.status(200).json("A link send to your email,Please Reset Password");
+    }
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};
+
+exports.emailVerifyForPassword = async (req, res) => {
+  const { id, tokenNo } = req.params;
+  try {
+    const result = await Token.findOne({ userId: id, token: tokenNo });
     res.status(200).json(result);
   } catch (error) {
     res.status(401).json(error);

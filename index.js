@@ -1,20 +1,50 @@
 require('dotenv').config()
+
 const express = require('express')
 const cors = require('cors')
-require('./DB/connection')
+const http = require('http')
+const socketIo = require('socket.io')
 const routes = require('./Routes/router')
+const { connectDB } = require('./DB/connection')
 
-const dc_server = express()
-dc_server.use(cors())
-dc_server.use(express.json())
-dc_server.use(routes)
+const app = express()
+const server = http.createServer(app)
+const io = socketIo(server)
 
-const PORT = 3003 || process.env.PORT
+// Middleware
+app.use(cors())
+app.use(express.json())
 
-dc_server.listen(PORT,()=>{
-    console.log(`Daily Server Started at port ${PORT} and waiting client request`);
+// Routes
+app.use(routes)
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
 })
 
-dc_server.get('/',(req,res)=>{
-    res.send('<h1>Daily Server Started and waiting client request</h1>')
+const PORT =  3003 || process.env.PORT
+
+// Socket.IO logic
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+
+    socket.on('chat message', (msg) => {
+        console.log('message: ' + msg);
+        io.emit('chat message', msg); // Broadcast the message to all connected clients
+    });
+});
+
+// Start the server
+connectDB().then(() => {
+    server.listen(PORT, () => {
+        console.log(`Daily Server Started at port ${PORT} and waiting client request`);
+    })
+}).catch(err => {
+    console.error('Failed to connect to database:', err)
 })
