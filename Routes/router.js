@@ -5,6 +5,7 @@ const pendingServiceController = require("../Controller/pendingServiceController
 const callRequestController = require("../Controller/callRequestController");
 const ongoingController = require("../Controller/ongoingController");
 const billingController = require("../Controller/billingControler");
+const availableDateController = require('../Controller/availableDateControoller')
 
 const router = new express.Router();
 
@@ -60,9 +61,15 @@ router.post("/history", jwtMiddleware, billingController.getHistoryController);
 router.post("/user/update", jwtMiddleware, userController.updateUserController);
 
 // forgot password email
-router.post("/password/forgot", userController.forgotPasswordEmailController);
+router.post("/password/forgot", userController.forgotPassEmailVerifyController);
 
 // verify token for forgot password
-router.get("/password/:id/forgot/verify/:tokenNo", userController.emailVerifyForPassword);
+router.get("/password/:id/forgot/verify/:tokenNo", userController.tokenVerifyForForgotPassController);
+
+// update passord with token
+router.post("/password/update",userController.updatePasswordController)
+
+// add service slot 
+router.post('/service/slot',availableDateController.addToSlotController)
 
 module.exports = router;

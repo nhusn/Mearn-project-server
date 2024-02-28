@@ -67,7 +67,7 @@ exports.loginController = async (req, res) => {
       res.status(404).json("Invalid username or password");
     }
   } catch (err) {
-    res.status(401).json(err);
+    res.status(401).json("Invalid Email or password");
   }
 };
 
@@ -107,7 +107,7 @@ exports.updateUserController = async (req, res) => {
   }
 };
 
-exports.forgotPasswordEmailController = async (req, res) => {
+exports.forgotPassEmailVerifyController = async (req, res) => {
   const { email } = req.body;
   try {
     const result = await users.findOne({ email });
@@ -121,17 +121,38 @@ exports.forgotPasswordEmailController = async (req, res) => {
       await sendEmail(result.email, "Forgot Password", url);
       return res.status(200).json("A link send to your email,Please Reset Password");
     }
+    return res.status(404).json("Account not found")
   } catch (error) {
     res.status(401).json(error);
   }
 };
 
-exports.emailVerifyForPassword = async (req, res) => {
+exports.tokenVerifyForForgotPassController = async (req, res) => {
   const { id, tokenNo } = req.params;
   try {
     const result = await Token.findOne({ userId: id, token: tokenNo });
-    res.status(200).json(result);
+    return res.status(200).json(result);
   } catch (error) {
     res.status(401).json(error);
   }
 };
+
+exports.updatePasswordController = async (req,res) => {
+  const {token,newPassword} = req.body
+
+  try {
+    // const userDetails = users.findOne({_id:userId})
+    const result = await Token.findOneAndDelete(token)
+    if(result){
+      const userDetails = await users.findOne(result.userId)
+      userDetails.password = newPassword
+      await userDetails.save()
+      sendEmail(userDetails.email,"Password Changed",`Dear ${userDetails.name}, Your password was changed succesfully , Happy Motoring`)
+      return res.status(200).json(userDetails)
+    }
+    return res.status(404).json("Link expired, Please try again")
+  } catch (error) {
+    res.status(401).json(error);
+  }
+  
+}

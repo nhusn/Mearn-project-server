@@ -3,7 +3,6 @@ const ongoing = require("../Models/ongoingModel");
 
 exports.addToHistoryController = async (req, res) => {
   const { allHistory, customerDetails, _id } = req.body;
-  console.log(allHistory);
   try {
     const newHistory = new history({
       customerDetails,
@@ -18,7 +17,7 @@ exports.addToHistoryController = async (req, res) => {
 };
 
 exports.getAllHistoryController = async (req, res) => {
-  const  {email}  = req.body;
+  const { email } = req.body;
   try {
     const result = await history.find({ "customerDetails.email": email });
     res.status(200).json(result);
@@ -27,12 +26,12 @@ exports.getAllHistoryController = async (req, res) => {
   }
 };
 
-exports.getHistoryController = async (req,res) => {
-    const {id} = req.body
-    try {
-        const result = await history.findOne({_id:id})
-        res.status(200).json(result)
-    } catch (error) {
-        res.status(401).json(error);
-    }
-}
+exports.getHistoryController = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const result = await history.findOne({ _id: id });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};

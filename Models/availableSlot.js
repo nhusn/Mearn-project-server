@@ -2,7 +2,7 @@ const {Schema,model} = require('mongoose')
 
 const slotSchema = new Schema({
     date:String,
-    Time:String,
+    time:String,
     modOfService:String
 })
 
